@@ -80,7 +80,11 @@ export const App = () => {
         onClickDelete={onClickDelete}
       />
       {/* 完了のTODOエリアのコンポーネント呼び出し */}
-      <CompleteTodos todos={completeTodos} onClickBack={onClickBack} />
+      <CompleteTodos
+        todos={completeTodos}
+        onClickBack={onClickBack}
+        disabled={incompleteTodos.length >= 5}
+      />
     </>
   );
 };
