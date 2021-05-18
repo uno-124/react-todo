@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "./styles.css";
+import { InputTodo } from "./components/InputTodo";
+import { IncompleteTodos } from "./components/IncompleteTodos";
+import { CompleteTodos } from "./components/CompleteTodos";
 
 export const App = () => {
   // 追加テキストのState
@@ -57,48 +60,27 @@ export const App = () => {
 
   return (
     <>
-      <div className="input-area">
-        {/* value(初期値)に追加Stateを設定する */}
-        {/* このStateが変更されるたびにvalueの値を更新したいのでonChaneにテキスト変更時にStateを更新する関数を入れる*/}
-        <input
-          placeholder="TODOを入力"
-          value={todoText}
-          onChange={onChangeTodoText}
-        />
-        <button onClick={onClickAdd}>追加</button>
-      </div>
-      <div className="incomplete-area">
-        <p className="title">未完了のTODO</p>
-        <ul>
-          {/* 未完了TODOを配列のmap関数で表示する */}
-          {/* React仮想DOMの差分を抽出しているため、ループ処理内で区別がつけられるようにkeyを指定する */}
-          {incompleteTodos.map((todo, index) => {
-            return (
-              <div key={todo} className="list-row">
-                <li>{todo}</li>
-                <button onClick={() => onClickComplete(index)}>完了</button>
-                {/* 引数()をつけると関数の登録ではなく実行の意味になり、画面ロード時に関数が実行されてしまう */}
-                {/* これを回避するために、アロー関数で呼び出し先の関数を呼び出す */}
-                <button onClick={() => onClickDelete(index)}>削除</button>
-              </div>
-            );
-          })}
-        </ul>
-      </div>
-      <div className="complete-area">
-        <p className="title">完了のTODO</p>
-        <ul>
-          {/* 完了TODOを配列のmap関数で表示する */}
-          {completeTodos.map((todo, index) => {
-            return (
-              <div key={todo} className="list-row">
-                <li>{todo}</li>
-                <button onClick={() => onClickBack(index)}>戻す</button>
-              </div>
-            );
-          })}
-        </ul>
-      </div>
+      {/* 追加テキストエリアのコンポーネント呼び出し */}
+      {/* コンポーネント：InputTodoにpropsとしてStateと関数を渡している */}
+      <InputTodo
+        todoText={todoText}
+        onChange={onChangeTodoText}
+        onClick={onClickAdd}
+        disabled={incompleteTodos.length >= 5}
+      />
+      {incompleteTodos.length >= 5 && (
+        <p style={{ color: "red" }}>
+          登録できるTODOは5件まで！ちゃんと消化すること！
+        </p>
+      )}
+      {/* 未完了のTODOエリアのコンポーネント呼び出し */}
+      <IncompleteTodos
+        todos={incompleteTodos}
+        onClickComplete={onClickComplete}
+        onClickDelete={onClickDelete}
+      />
+      {/* 完了のTODOエリアのコンポーネント呼び出し */}
+      <CompleteTodos todos={completeTodos} onClickBack={onClickBack} />
     </>
   );
 };
